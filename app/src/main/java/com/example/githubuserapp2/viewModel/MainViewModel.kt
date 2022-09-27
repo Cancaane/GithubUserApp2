@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.githubuserapp2.Resource
 import com.example.githubuserapp2.network.ApiConfig
-import com.example.githubuserapp2.network.ApiService
 import com.example.githubuserapp2.response.SearchResponse
 import com.example.githubuserapp2.response.User
 import retrofit2.Call
@@ -13,7 +12,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MainViewModel: ViewModel() {
-    private val config: ApiService = ApiConfig.getApiService()
+
+    private val config = ApiConfig.getApiService()
     private val user = MutableLiveData<Resource<List<User>>>()
 
     fun searchUser(query: String): LiveData<Resource<List<User>>> {
@@ -27,7 +27,7 @@ class MainViewModel: ViewModel() {
                 if (list.isNullOrEmpty())
                     user.postValue(Resource.Error(null))
                 else
-                    user.postValue(Resource.Success(list!!))
+                    user.postValue(Resource.Success(list))
             }
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {

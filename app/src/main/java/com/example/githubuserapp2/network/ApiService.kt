@@ -10,7 +10,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("search/user")
+    @GET("search/users")
     fun searchUser(
         @Query("q")
         query : String
@@ -22,9 +22,9 @@ interface ApiService {
         username: String,
         @Header("Authorization")
         token : String = API_KEY
-    ) : Call<List<User>>
+    ) : Call<User>
 
-    @GET("user/{username}/followers")
+    @GET("users/{username}/followers")
     fun getFollowers(
         @Path("username")
         username: String,
@@ -32,7 +32,7 @@ interface ApiService {
         token : String = API_KEY
     ) : Call<List<User>>
 
-    @GET("user/{username}/following")
+    @GET("users/{username}/following")
     fun getFollowing(
         @Path("username")
         username: String,

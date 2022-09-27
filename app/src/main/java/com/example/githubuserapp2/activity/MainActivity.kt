@@ -1,12 +1,7 @@
 package com.example.githubuserapp2.activity
 
-import android.app.SearchManager
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Message
-import android.view.Menu
-import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,7 +36,7 @@ class MainActivity : AppCompatActivity(), ViewStateCallBack<List<User>> {
         binding.search.apply {
             queryHint = resources.getString(R.string.search_hint)
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
+                override fun onQueryTextSubmit(query: String): Boolean {
                     user = query.toString()
                     viewModel.searchUser(user).observe(this@MainActivity, {
                         when (it) {
@@ -63,7 +58,8 @@ class MainActivity : AppCompatActivity(), ViewStateCallBack<List<User>> {
 
     override fun onLoading() {
         binding.apply {
-            mainProgressBar.visibility = invisible
+            mainProgressBar.visibility = visible
+            tvMessage.visibility = invisible
         }
     }
 
@@ -72,13 +68,18 @@ class MainActivity : AppCompatActivity(), ViewStateCallBack<List<User>> {
         binding.apply {
             rvListUser.visibility = visible
             mainProgressBar.visibility = invisible
+            tvMessage.visibility = invisible
         }
     }
 
     override fun onFailed(message: String?) {
         binding.apply {
             rvListUser.visibility = invisible
-            mainProgressBar.visibility = visible
+            mainProgressBar.visibility = invisible
+            tvMessage.apply {
+                text = resources.getString(R.string.user_not_found)
+                visibility = visible
+            }
         }
     }
 }

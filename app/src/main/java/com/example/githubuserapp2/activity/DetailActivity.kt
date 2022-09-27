@@ -9,69 +9,87 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.githubuserapp2.R
 import com.example.githubuserapp2.Resource
+import com.example.githubuserapp2.ViewStateCallBack
+import com.example.githubuserapp2.adapter.ViewPagerAdapter
 import com.example.githubuserapp2.databinding.ActivityDetailBinding
 import com.example.githubuserapp2.response.User
 import com.example.githubuserapp2.viewModel.DetailViewModel
+import com.google.android.material.tabs.TabLayoutMediator
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity(), ViewStateCallBack<User?> {
 
-//    @StringRes
-//    val TAB_TITLES = intArrayOf(
-//        R.string.followers,
-//        R.string.following
-//    )
-//
-//    private lateinit var binding: ActivityDetailBinding
-//    private lateinit var viewModel: DetailViewModel
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        binding = ActivityDetailBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
-//
-//        supportActionBar?.apply {
-//            setDisplayHomeAsUpEnabled(true)
-//            elevation = 0f
-//        }
-//
-////        val username = intent.getStringExtra(EXTRA_USER)
-////        viewModel.getDetailUser(username).observe(this, {
-////            when(it) {
-////                is Resource.Loading -> onLoading()
-////                is Resource.Success -> onSuccess(it.data)
-////                is Resource.Error -> onFailed(it.message)
-////            }
-////        })
-////    }
-//
-//
-//    fun onLoading() {
-//
-//    }
-//
-//    fun onSuccess(data: User?) {
-//        binding.apply {
-//            tvCompany.text = data?.company
-//            tvLocation.text = data?.location
-//            tvRepositoryValue.text = data?.repository.toString()
-//            tvFollowersValue.text = data?.followers.toString()
-//            tvFollowingValue.text = data?.following.toString()
-//
-//            Glide.with(this@DetailActivity)
-//                .load(data?.avatar)
-//                .apply(RequestOptions.circleCropTransform())
-//                .into(ivAvatar)
-//
-//            supportActionBar?.title = data?.username
-//        }
-//
-//    }
-//
-//    fun onFailed(message: String?) {
-//
-//    }
+    private lateinit var binding: ActivityDetailBinding
+    private lateinit var viewModel: DetailViewModel
+
+    @StringRes
+    val TAB_TITLES = intArrayOf(
+        R.string.followers,
+        R.string.following
+    )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = ActivityDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        viewModel= ViewModelProvider(this).get(DetailViewModel::class.java)
+
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            elevation = 0f
+        }
+
+        val username = intent.getStringExtra(EXTRA_USER)
+        if (username != null) {
+            viewModel.getDetailUser(username).observe(this, {
+                when(it) {
+                    is Resource.Loading -> onLoading()
+                    is Resource.Success -> onSuccess(it.data)
+                    is Resource.Error -> onFailed(it.message)
+                }
+            })
+
+            val pageAdapter = ViewPagerAdapter(this, username.toString())
+            binding.apply {
+                viewPager.adapter = pageAdapter
+                TabLayoutMediator(tabs, viewPager) {
+                    tabs, position ->
+                    tabs.text = resources.getString(TAB_TITLES[position])
+                }.attach()
+            }
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
+    override fun onLoading() {
+        binding.apply {
+            mainProgressBar.visibility = invisible
+        }
+    }
+
+    override fun  onSuccess(data: User?) {
+        binding.apply {
+            tvUsername.text = data?.username
+            tvName.text = data?.name
+            tvCompany.text = data?.company
+            tvLocation.text = data?.location
+            tvRepositoryValue.text = data?.repository.toString()
+            tvFollowersValue.text = data?.followers.toString()
+            tvFollowingValue.text = data?.following.toString()
+
+            Glide.with(this@DetailActivity)
+                .load(data?.avatar)
+                .apply(RequestOptions.circleCropTransform())
+                .into(ivAvatar)
+        }
+    }
+
+    override fun onFailed(message: String?) {
+
+    }
 
 }

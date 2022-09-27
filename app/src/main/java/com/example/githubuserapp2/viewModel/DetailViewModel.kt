@@ -13,18 +13,21 @@ import retrofit2.Response
 class DetailViewModel: ViewModel() {
 
     private val config = ApiConfig.getApiService()
-    private val user = MutableLiveData<Resource<User>>()
+    private val detailUser = MutableLiveData<Resource<User>>()
 
-//    fun getDetailUser(username: String?): LiveData<Resource<User>> {
-//        config.getDetailUser(username!!).enqueue(object : Callback<User>{
-//            override fun onResponse(call: Call<User>, response: Response<User>) {
-//                val result = response.body()
-//                user.postValue(Resource.Success(result))
-//            }
-//
-//            override fun onFailure(call: Call<User>, t: Throwable) {
-//            }
-//        })
-//        return user
-//    }
+    fun getDetailUser(username: String?) : LiveData<Resource<User>> {
+        detailUser.postValue(Resource.Loading())
+        config.getDetailUser(username!!).enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                val result = response.body()
+                detailUser.postValue(Resource.Success(result))
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                detailUser.postValue(Resource.Error(t.message))
+            }
+        })
+
+        return detailUser
+    }
 }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">GithubUserApp2</string>
     <string name="search">Cari</string>
-    <string name="search_hint">Masukkan Username</string>
+    <string name="search_hint">Search</string>
     <string name="username">Username</string>
     <string name="name">Name</string>
     <string name="company">Company</string>
@@ -11,4 +11,8 @@
     <string name="following">Following</string>
     <string name="search_message">Find Username</string>
     <string name="user_not_found">User Not Found</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="followers_not_found">Followers Not Found</string>
+    <string name="following_not_found">Following Not Found</string>
+    <string name="action_failed">Action Failed</string>
 </resources>
