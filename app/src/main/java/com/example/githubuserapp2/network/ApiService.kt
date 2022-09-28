@@ -41,6 +41,6 @@ interface ApiService {
     ) : Call<List<User>>
 
     companion object {
-        private const val API_KEY = "token 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"
+        private const val API_KEY = "GITHUB_TOKEN"
     }
 }
